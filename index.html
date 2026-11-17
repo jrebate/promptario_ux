@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Promptario UX</title>
+<meta name="description" content="Prompts en español para revisar textos, formularios, imágenes e investigación con IA pensando en todas las personas. Gratis, listos para copiar. Una herramienta de CentaurUX.">
+<meta property="og:title" content="Promptario UX: prompts de UX y accesibilidad en español, listos para copiar">
+<meta property="og:description" content="Lenguaje claro, mensajes de error, texto alternativo, formularios e investigación inclusiva. Copia, pega en tu IA y revisa el resultado con criterio.">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/centaurux-iso-negro.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,400..900&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@500;600&display=swap">
+<link rel="stylesheet" href="centaurux-base.css">
+<style>
+  main { display: grid; gap: 4rem; padding-block: 3rem 5rem; }
+  .cz-lead { max-width: none; }
+  .hero { display: grid; gap: 1rem; }
+  .hero .cz-sticky { justify-self: start; --cz-rotate: -2deg; margin-top: .5rem; }
+
+  .lib { display: grid; gap: 1.5rem; }
+  .filters { display: grid; gap: 1rem; }
+  .search { display: grid; gap: .4rem; }
+  .search label { font-weight: 600; font-size: .95rem; }
+  input[type="search"] {
+    width: 100%; font: 400 1rem/1.5 var(--cz-font-sans); color: var(--cz-fg);
+    background: var(--cz-card); border: 1px solid var(--cz-input); border-radius: var(--cz-radius); padding: .65rem .75rem;
+  }
+  input:focus-visible, button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--cz-fg); outline-offset: 2px; }
+  .cats { display: flex; flex-wrap: wrap; gap: .5rem; border: 0; margin: 0; padding: 0; min-width: 0; }
+  .cats legend { font-weight: 600; font-size: .95rem; margin-bottom: .4rem; padding: 0; }
+  .cat { position: relative; }
+  .cat input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .cat span { display: inline-block; font: 500 .875rem/1.2 var(--cz-font-sans); padding: .5rem .85rem; border: 1px solid var(--cz-input); border-radius: 999px; background: var(--cz-card); cursor: pointer; }
+  .cat input:checked + span { background: var(--cz-fg); color: var(--cz-bg); border-color: var(--cz-fg); }
+  .cat input:focus-visible + span { outline: 2px solid var(--cz-fg); outline-offset: 2px; }
+  .count { font-size: .9rem; color: var(--cz-muted-fg); min-height: 1.4em; }
+
+  .prompts { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
+  .prompt { display: grid; gap: .75rem; padding: 1.25rem; border: 1px solid var(--cz-border); border-radius: var(--cz-radius); background: var(--cz-card); }
+  .prompt-head { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: baseline; justify-content: space-between; }
+  .prompt h3 { margin: 0; }
+  .tag { font: 500 .68rem/1 var(--cz-font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--cz-muted-fg); }
+  .prompt p { margin: 0; }
+  .prompt pre {
+    margin: 0; white-space: pre-wrap; word-wrap: break-word; font: 400 .9rem/1.6 var(--cz-font-mono);
+    background: var(--cz-muted); color: var(--cz-fg); border-radius: var(--cz-radius); padding: 1rem;
+    max-height: 22rem; overflow: auto;
+  }
+  .ph { background: color-mix(in oklch, var(--cz-violet) 18%, transparent); border-radius: 2px; padding: 0 .15em; }
+  .prompt-actions { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
+  .copied { font-size: .9rem; }
+  .check-note { font-size: .9rem; color: var(--cz-muted-fg); border-left: 3px solid var(--cz-rule); padding-left: .75rem; }
+  .empty { padding: 2rem 1.25rem; border: 1px dashed var(--cz-input); border-radius: var(--cz-radius); color: var(--cz-muted-fg); }
+
+  .locked { display: grid; gap: .75rem; padding: 1.25rem; border: 1px dashed var(--cz-input); border-radius: var(--cz-radius); }
+  .locked ul { margin: 0; padding-left: 1.2rem; display: grid; gap: .3rem; columns: 2 260px; }
+  .locked li { break-inside: avoid; }
+
+  .how { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+  .how .cz-card { padding: 1.25rem; display: grid; gap: .5rem; align-content: start; }
+  .how .cz-card:hover { transform: none; box-shadow: none; border-color: var(--cz-rule); }
+  .how .num { font: 500 .75rem/1 var(--cz-font-mono); letter-spacing: .12em; color: var(--cz-muted-fg); }
+
+  .pro { display: grid; gap: 1rem; padding: 1.5rem; border: 1px solid var(--cz-border); background: var(--cz-card); border-radius: var(--cz-radius); }
+  .pro ul { margin: 0; padding-left: 1.2rem; display: grid; gap: .35rem; }
+  .pro-ask { font-weight: 600; font-size: 1.05rem; margin: 0; }
+  .pro-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .pro-chip { display: inline-flex; gap: .45rem; align-items: center; font: 500 .85rem/1.2 var(--cz-font-sans); color: var(--cz-fg); background: transparent; border: 1px dashed var(--cz-input); border-radius: 999px; padding: .45rem .8rem; cursor: pointer; }
+  .pro-chip[aria-pressed="true"] { border-style: solid; border-color: var(--cz-fg); }
+  .pro-chip .t { font: 500 .62rem/1 var(--cz-font-mono); letter-spacing: .12em; text-transform: uppercase; background: var(--cz-fg); color: var(--cz-bg); border-radius: 2px; padding: .2rem .35rem; }
+  .pro-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .thanks { padding: .75rem 1rem; background: var(--cz-muted); border-radius: var(--cz-radius); }
+  .pro-contact { display: flex; flex-wrap: wrap; gap: .25rem .75rem; align-items: center; margin: 0; }
+  .notes { display: grid; gap: .75rem; font-size: .925rem; color: var(--cz-muted-fg); border-top: 1px solid var(--cz-rule); padding-top: 1.5rem; }
+  .notes p { margin: 0; }
+  .notes a, .notes strong { color: var(--cz-fg); }
+</style>
+</head>
+<body>
+
+<header class="cz-header cz-dark">
+  <div class="cz-wrap cz-header__inner">
+    <a class="cz-wordmark" href="https://centaurux.es" target="_blank" rel="noopener" aria-label="CentaurUX, ir a la web" data-track="prompts-ir-centaurux">
+      <img src="assets/centaurux-iso-blanco.png" alt="" width="28" height="28">
+      <span>CentaurUX</span>
+    </a>
+    <span class="cz-header__tag">Research, redesigned.</span>
+  </div>
+</header>
+
+<main class="cz-wrap">
+  <section class="hero">
+    <span class="cz-label">CentaurUX · Lab · Promptario UX</span>
+    <h1 class="cz-display-xl">Prompts de UX que piensan en todas las <span class="cz-marker">personas</span></h1>
+    <p class="cz-lead">Prompts en español para revisar textos, formularios, imágenes e investigación con la IA que ya usas. Copia uno, cambia lo que está entre corchetes y pégalo en ChatGPT, Claude, Gemini o Copilot. La IA te da un borrador; el criterio lo pones tú.</p>
+    <p class="cz-sticky">Gratis, sin registro y en español</p>
+  </section>
+
+  <section class="lib" aria-labelledby="libTitulo">
+    <h2 class="cz-section-title" id="libTitulo"><span>Los prompts</span></h2>
+    <div class="filters">
+      <div class="search">
+        <label for="buscar">Buscar un prompt</label>
+        <input type="search" id="buscar" placeholder="Por ejemplo: error, alt, entrevista…" autocomplete="off">
+      </div>
+      <fieldset class="cats" id="cats">
+        <legend>Tema</legend>
+      </fieldset>
+      <p class="count" id="cuenta" role="status" aria-live="polite"></p>
+    </div>
+    <ul class="prompts" id="lista"></ul>
+    <p class="empty" id="vacio" hidden>No hay prompts gratis con ese filtro. Prueba con otra palabra o mira el pack completo más abajo.</p>
+
+    <div class="locked" aria-labelledby="lockedTitulo">
+      <h3 class="cz-display-md" id="lockedTitulo">Y en el pack completo, más de 50</h3>
+      <ul>
+        <li>Auditoría guiada por pasos: teclado, foco y orden de lectura</li>
+        <li>Textos de botones y enlaces para toda una web</li>
+        <li>Descripciones de gráficos y tablas complejas</li>
+        <li>Lectura fácil: primer borrador para validar con personas</li>
+        <li>Guion de prueba de usabilidad con lector de pantalla</li>
+        <li>Consentimiento informado en lenguaje claro</li>
+        <li>Informe de hallazgos para dirección, en una página</li>
+        <li>Historias de usuario con criterios de aceptación inclusivos</li>
+      </ul>
+      <p><a href="#pro" data-track="prompts-ir-pro">¿Te interesa el pack completo?</a></p>
+    </div>
+  </section>
+
+  <section style="display:grid;gap:1.25rem" aria-labelledby="comoTitulo">
+    <h2 class="cz-section-title" id="comoTitulo"><span>Cómo sacarles partido</span></h2>
+    <div class="how">
+      <article class="cz-card"><span class="num">01</span><h3 class="cz-display-md">Cambia los corchetes</h3><p>Todo lo que va entre <span class="ph">[corchetes]</span> es tuyo: pega tu texto, describe tu público o tu contexto. Cuanto más concreto, mejor responde.</p></article>
+      <article class="cz-card"><span class="num">02</span><h3 class="cz-display-md">Pide que pregunte</h3><p>Todos los prompts piden a la IA que no invente y que te pregunte si le falta información. Contéstale: es la mitad del valor.</p></article>
+      <article class="cz-card"><span class="num">03</span><h3 class="cz-display-md">Revisa siempre</h3><p>La IA se equivoca con seguridad. Usa el resultado como borrador y pruébalo con personas reales, sobre todo con personas con discapacidad.</p></article>
+    </div>
+  </section>
+
+  <section class="pro" id="pro" aria-labelledby="proTitulo" tabindex="-1">
+    <h2 id="proTitulo" class="cz-display-md">Promptario UX completo</h2>
+    <p class="pro-ask">¿Pagarías una cantidad simbólica por el pack completo?</p>
+    <ul>
+      <li>Más de 50 prompts por fases del proyecto: investigación, diseño, contenido, pruebas e informe.</li>
+      <li>Cadenas de prompts que se encadenan para revisar una pantalla de principio a fin.</li>
+      <li>Descarga en PDF y en plantilla para tu herramienta de notas, con actualizaciones.</li>
+    </ul>
+    <p>Marca lo que más te interesa (puedes marcar varias):</p>
+    <div class="pro-row">
+      <button type="button" class="pro-chip" aria-pressed="false" data-pro="prompts-pro-pack-completo"><span class="t">Pro</span> Todos los prompts</button>
+      <button type="button" class="pro-chip" aria-pressed="false" data-pro="prompts-pro-cadenas"><span class="t">Pro</span> Cadenas para revisar una pantalla</button>
+      <button type="button" class="pro-chip" aria-pressed="false" data-pro="prompts-pro-plantilla"><span class="t">Pro</span> PDF y plantilla de notas</button>
+      <button type="button" class="pro-chip" aria-pressed="false" data-pro="prompts-pro-equipo"><span class="t">Pro</span> Para mi equipo</button>
+    </div>
+    <div class="pro-actions">
+      <button type="button" class="cz-btn" id="proBtn">Me interesa <span class="cz-arrow" aria-hidden="true">→</span></button>
+      <a class="cz-btn cz-btn--outline" href="https://ko-fi.com/jrebate" target="_blank" rel="noopener" data-track="prompts-kofi-pro">Apóyalo ya en Ko-fi</a>
+    </div>
+    <div class="thanks" id="proGracias" hidden role="status">Gracias, lo tendremos en cuenta. Tu interés nos ayuda a decidir qué preparar. Mientras tanto, los prompts de esta página son gratis.</div>
+    <p class="pro-contact">¿Quieres que te avise cuando esté listo o echas algo en falta? Escríbeme, soy Jorge: <span class="cz-creditos__addr">jrebateserrano@gmail.com</span> <button type="button" class="cz-creditos__copy" data-cz-copy="jrebateserrano@gmail.com" data-track="prompts-contacto-email">Copiar correo</button></p>
+  </section>
+
+  <section class="notes" aria-label="Notas">
+    <p>Estos prompts ayudan a revisar y a preparar borradores. No sustituyen una evaluación experta ni pruebas con personas, y no garantizan que un producto cumpla ninguna norma de accesibilidad. Promptario UX no está afiliado a ninguna empresa de IA.</p>
+    <p>No pegues en una IA datos personales ni información confidencial de tu empresa o de las personas participantes en tu investigación.</p>
+    <p>¿Quieres que tus textos se entiendan mejor? Prueba <a href="https://jrebate.github.io/lenguaje_claro/" target="_blank" rel="noopener" data-track="prompts-ir-legible">Legible</a>, el asistente de lenguaje claro. ¿Te resulta útil? Puedes <a href="https://ko-fi.com/jrebate" target="_blank" rel="noopener" data-track="prompts-kofi-pie">invitarnos a un café en Ko-fi</a>.</p>
+    <p><strong>Privacidad:</strong> esta página no envía nada a ningún sitio. Contamos visitas y clics con <a href="https://www.goatcounter.com/" target="_blank" rel="noopener">GoatCounter</a>, que no usa cookies ni guarda datos personales.</p>
+  </section>
+</main>
+
+<footer class="cz-footer">
+  <div class="cz-wrap cz-footer__inner">
+    <span class="cz-label">Human + AI = Centaur</span>
+    <a class="cz-wordmark" href="https://centaurux.es" target="_blank" rel="noopener">
+      <img class="cz-logo--light-bg" src="assets/centaurux-iso-negro.png" alt="" width="24" height="24">
+      <img class="cz-logo--dark-bg" src="assets/centaurux-iso-blanco.png" alt="" width="24" height="24">
+      <span class="cz-label" style="color:var(--cz-fg)">CentaurUX</span>
+    </a>
+    <div class="cz-footer__creditos">
+    <div class="cz-creditos">
+      <p class="cz-creditos__cta"><img class="cz-logo--light-bg" src="assets/centaurux-iso-negro.png" alt="" width="22" height="22"><img class="cz-logo--dark-bg" src="assets/centaurux-iso-blanco.png" alt="" width="22" height="22"><span>Ponte al día con la IA en UX, a tu ritmo y sin FOMO, en <a href="https://www.shiftr.pro/" target="_blank" rel="noopener">Shift+R</a> y <a href="https://centaurux.es" target="_blank" rel="noopener">CentaurUX</a></span></p>
+      <p>Creado por <b>Jorge Rebate Serrano</b> · © 2026, todos los derechos reservados. Puedes insertar esta herramienta en tu web citando la autoría y sin cobrar por ella (<a href="LICENSE.md" target="_blank" rel="noopener">ver licencia</a>).</p>
+      <p class="cz-creditos__mail">Correo: <span class="cz-creditos__addr">jrebateserrano@gmail.com</span> <button type="button" class="cz-creditos__copy" data-cz-copy="jrebateserrano@gmail.com">Copiar correo</button></p>
+      <p>LinkedIn: <a href="https://www.linkedin.com/in/jrebateserrano/" target="_blank" rel="noopener">Jorge Rebate Serrano</a></p>
+    </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Medición (GoatCounter) ---------- */
+  function track(name, title) {
+    try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: name, title: title || name, event: true }); } catch (e) {}
+  }
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest("[data-track]");
+    if (a) track(a.getAttribute("data-track"));
+  });
+
+  /* ---------- Copiar ---------- */
+  function copyText(text, onOk, onFail) {
+    try { navigator.clipboard.writeText(text).then(onOk, onFail); } catch (e) { onFail(); }
+  }
+  function selectNode(node) {
+    var r = document.createRange(); r.selectNodeContents(node);
+    var s = getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+  document.querySelectorAll("[data-cz-copy]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var label = b.textContent;
+      copyText(b.getAttribute("data-cz-copy"),
+        function () { b.textContent = "Copiado"; setTimeout(function () { b.textContent = label; }, 1800); },
+        function () { selectNode(b.previousElementSibling); b.textContent = "Seleccionado"; });
+    });
+  });
+
+  /* ---------- Prompts gratis ---------- */
+  var CATS = [
+    { id: "todos", name: "Todos" },
+    { id: "textos", name: "Textos" },
+    { id: "formularios", name: "Formularios" },
+    { id: "imagenes", name: "Imágenes y vídeo" },
+    { id: "investigacion", name: "Investigación" },
+    { id: "revision", name: "Revisión" }
+  ];
+
+  var CIERRE = "\n\nNo inventes datos. Si te falta información para hacerlo bien, hazme primero las preguntas que necesites. No digas que algo «cumple» una norma: señala lo que conviene revisar.";
+
+  var P = [
+    {
+      id: "lenguaje-claro", cat: "textos", title: "Reescribir un texto en lenguaje claro",
+      use: "Para textos de webs, correos o trámites que cuestan de entender.",
+      text: "Actúa como especialista en lenguaje claro en español.\n\nReescribe este texto para que lo entienda a la primera [describe el público: por ejemplo, personas mayores que hacen un trámite por primera vez].\n\nTexto:\n[pega aquí el texto]\n\nReglas:\n- Frases de 20 palabras o menos, en orden sujeto, verbo y complemento.\n- Voz activa y segunda persona («tú» o «usted», según [elige uno]).\n- Lo más importante, al principio.\n- Sustituye tecnicismos por palabras comunes; si un término es imprescindible, explícalo la primera vez.\n- Usa listas cuando haya pasos o requisitos.\n- No cambies datos, plazos, importes ni obligaciones.\n\nDevuélveme:\n1. El texto reescrito.\n2. Una tabla con los cambios más importantes y el motivo de cada uno.\n3. Las dudas que tengas sobre el significado del original.",
+      check: "Comprueba que no ha cambiado el sentido legal o los datos. Si puedes, pásalo por Legible para ver la legibilidad."
+    },
+    {
+      id: "mensajes-error", cat: "textos", title: "Mensajes de error que ayudan",
+      use: "Para sustituir errores tipo «Campo inválido» por mensajes que dicen qué pasa y cómo arreglarlo.",
+      text: "Actúa como redactor o redactora de microtextos de UX.\n\nEstos son los mensajes de error de [describe el producto o el formulario]:\n[pega la lista de errores actuales, uno por línea, con el campo al que pertenecen]\n\nPara cada uno, escribe un mensaje nuevo que:\n- Diga qué ha pasado sin culpar a la persona.\n- Explique cómo arreglarlo, con un ejemplo si ayuda («Escribe la fecha así: 31/12/1980»).\n- Nombre el campo, para que se entienda también si se lee fuera de contexto (por ejemplo, con un lector de pantalla).\n- No dependa solo del color ni de iconos.\n- Tenga menos de 120 caracteres.\n\nDevuélveme una tabla: campo, mensaje actual, mensaje nuevo y por qué es mejor.",
+      check: "Comprueba que el error aparece junto al campo y que tu equipo de desarrollo lo asocia al campo en el código."
+    },
+    {
+      id: "enlaces-botones", cat: "textos", title: "Textos de enlaces y botones que se entienden solos",
+      use: "Para acabar con los «Haz clic aquí», «Leer más» y «Ver» repetidos.",
+      text: "Actúa como especialista en contenido y UX.\n\nTe paso los textos de enlaces y botones de una página de [describe la página], con un poco de contexto de cada uno:\n[pega la lista: texto actual — a dónde lleva o qué hace]\n\nPara cada uno, propón un texto que:\n- Diga a dónde lleva o qué pasa al pulsar, aunque se lea solo, sin el párrafo de alrededor.\n- Empiece por la palabra más importante.\n- Sea distinto de los demás si lleva a sitios distintos.\n- Avise si abre una ventana nueva o descarga un archivo (con formato y peso, si los sé).\n\nDevuélveme una tabla: texto actual, texto propuesto y nota.",
+      check: "Lee solo la lista de enlaces de la página, como haría alguien con lector de pantalla: ¿se distinguen todos?"
+    },
+    {
+      id: "formulario", cat: "formularios", title: "Revisar etiquetas e instrucciones de un formulario",
+      use: "Para un formulario que la gente abandona o rellena mal.",
+      text: "Actúa como especialista en diseño de formularios y UX.\n\nEste es el formulario de [para qué sirve] y lo rellenan [quién lo rellena]. Te paso cada campo con su etiqueta, su ayuda, si es obligatorio y el tipo de dato:\n[pega la lista de campos, o el HTML del formulario]\n\nRevísalo y dime:\n1. Campos que se podrían quitar o pedir más tarde, y por qué.\n2. Etiquetas confusas y una alternativa para cada una.\n3. Instrucciones que faltan antes de empezar a escribir (formatos, longitud, documentos que hay que tener a mano).\n4. Campos obligatorios que no se marcan con texto.\n5. Campos que deberían permitir autocompletar (nombre, correo, dirección…).\n6. Problemas de orden o de agrupación.\n\nOrdena los hallazgos de más a menos impacto para la persona usuaria.",
+      check: "Rellena el formulario solo con el teclado y con el zoom al 200 % para ver si los cambios funcionan."
+    },
+    {
+      id: "alt-text", cat: "imagenes", title: "Texto alternativo para una imagen",
+      use: "Para escribir el alt de una imagen según para qué está en la página.",
+      text: "Actúa como especialista en accesibilidad de contenidos.\n\nNecesito el texto alternativo de una imagen.\n- Dónde está: [describe la página y el párrafo que la rodea]\n- Para qué está: [informar, decorar, es un enlace o un botón, es un gráfico…]\n- Qué se ve: [describe la imagen, o adjúntala si tu IA permite imágenes]\n\nReglas:\n- Si es decorativa, dímelo y recomienda dejar el alt vacío.\n- Si es un enlace o un botón, describe a dónde lleva o qué hace, no la imagen.\n- Si informa, cuenta lo que la persona necesita saber en este contexto, en 150 caracteres o menos. No empieces por «Imagen de».\n- Si tiene texto dentro, inclúyelo.\n- Si es un gráfico con datos, dame un alt corto y además una descripción larga para poner junto a la imagen.\n\nDame dos propuestas y explica cuál elegirías.",
+      check: "La IA puede ver cosas que no están en la imagen. Compara su propuesta con la imagen real antes de publicarla."
+    },
+    {
+      id: "subtitulos", cat: "imagenes", title: "Revisar subtítulos y preparar la transcripción",
+      use: "Para limpiar los subtítulos automáticos de un vídeo y tener una transcripción.",
+      text: "Actúa como especialista en subtitulado en español.\n\nTe paso los subtítulos automáticos de un vídeo de [tema y duración]. Hablan [quién habla].\n[pega aquí los subtítulos en formato SRT o VTT]\n\nHaz esto:\n1. Corrige ortografía, puntuación y nombres propios, sin cambiar los tiempos.\n2. Divide las líneas que tengan más de 42 caracteres y los subtítulos de más de 2 líneas.\n3. Indica quién habla cuando cambie la persona y no se vea en pantalla.\n4. Añade entre corchetes los sonidos importantes para entender el vídeo, como [risas] o [suena el teléfono].\n5. Marca con ⚠ los fragmentos que no estés seguro de haber entendido.\n\nDespués, dame una transcripción en texto corrido, con párrafos y quién habla, para publicarla junto al vídeo.",
+      check: "Revisa todos los ⚠ escuchando el vídeo. Si hay información que solo se ve (un texto en pantalla, un gesto), hará falta audiodescripción."
+    },
+    {
+      id: "guion-entrevista", cat: "investigacion", title: "Guion de entrevista inclusivo",
+      use: "Para preparar entrevistas en las que participen personas con discapacidad, mayores o con poca experiencia digital.",
+      text: "Actúa como investigador o investigadora de UX con experiencia en investigación inclusiva.\n\nQuiero entender [qué quieres averiguar] sobre [producto o servicio]. Participarán [describe a las personas: por ejemplo, personas ciegas que usan lector de pantalla y personas mayores de 70 años].\nLa entrevista será [en persona / por videollamada] y durará [minutos].\n\nPrepara:\n1. Un guion con preguntas abiertas, neutras y sin jerga, empezando por el contexto de su vida diaria.\n2. Preguntas de seguimiento para cada bloque.\n3. Lo que debo preparar antes para que cualquiera pueda participar: formatos del consentimiento, herramientas, pausas, acompañantes, pago.\n4. Preguntas que debo evitar y por qué.\n\nNo des por hecho qué puede o no puede hacer una persona por su discapacidad.",
+      check: "Pregunta a las personas participantes qué necesitan antes de la sesión. Ningún guion sustituye eso."
+    },
+    {
+      id: "sintesis", cat: "investigacion", title: "Sintetizar notas de pruebas con usuarios",
+      use: "Para ordenar las notas de varias sesiones sin perder qué dijo cada persona.",
+      text: "Actúa como investigador o investigadora de UX.\n\nTe paso las notas de [número] sesiones de prueba de [producto o tarea]. Cada sesión empieza con un código de participante (P1, P2…). He quitado nombres y datos personales.\n[pega aquí las notas]\n\nHaz esto:\n1. Agrupa los problemas que se repiten. Para cada grupo: descripción, en cuántas sesiones aparece, qué participantes y una cita literal.\n2. Indica la gravedad (alta, media o baja) y explica el criterio.\n3. Separa los problemas que afectan sobre todo a personas que usan tecnologías de apoyo o configuraciones distintas (zoom, teclado, lector de pantalla), si las hay.\n4. Lista lo que funcionó bien.\n5. Dime qué conclusiones NO se pueden sacar con estos datos.\n\nNo inventes citas: usa solo frases que estén en las notas.",
+      check: "Busca cada cita en tus notas originales. Si una no aparece, quítala."
+    },
+    {
+      id: "heuristica", cat: "revision", title: "Revisión heurística rápida de una pantalla",
+      use: "Para una primera pasada a una pantalla antes de enseñarla al equipo.",
+      text: "Actúa como especialista en UX.\n\nRevisa esta pantalla de [producto]. Sirve para que [quién] pueda [tarea principal].\n[adjunta una captura, o describe la pantalla de arriba abajo con todos sus textos y elementos]\n\nUsa las 10 heurísticas de Nielsen y añade estas comprobaciones:\n- ¿Se entiende para qué sirve la pantalla en 5 segundos?\n- ¿Hay información que solo se transmite con color, posición o forma?\n- ¿Los textos de botones y enlaces dicen lo que hacen?\n- ¿El orden de lectura tiene sentido de arriba abajo?\n\nPara cada problema, dame: qué pasa, dónde, heurística o comprobación, gravedad (de 1 a 4) y una propuesta de mejora. Ordénalos por gravedad. Después, dime qué no puedes evaluar desde una captura (por ejemplo, el teclado o el lector de pantalla).",
+      check: "Una captura no muestra el foco, el teclado ni lo que lee un lector de pantalla. Eso hay que probarlo en la pantalla real."
+    },
+    {
+      id: "encabezados", cat: "revision", title: "Revisar la estructura de encabezados de una página",
+      use: "Para comprobar que los títulos de una página tienen un orden lógico.",
+      text: "Actúa como especialista en arquitectura de información y accesibilidad web.\n\nEsta es la lista de encabezados de una página de [describe la página], en el orden en que aparecen, con su nivel:\n[pega la lista, por ejemplo: H1 Inicio / H2 Servicios / H4 Precios… o pega el HTML]\n\nDime:\n1. Si hay un único H1 que describe la página.\n2. Saltos de nivel (por ejemplo, de H2 a H4) y cómo corregirlos.\n3. Encabezados que no lo parecen por su texto, o textos que deberían ser encabezados.\n4. Si leyendo solo los encabezados se entiende de qué va la página y se encuentra cada sección.\n5. Una propuesta de estructura completa.",
+      check: "Comprueba la estructura real con una extensión que liste los encabezados o con un lector de pantalla."
+    },
+    {
+      id: "explicar-negocio", cat: "revision", title: "Explicar un problema de accesibilidad a negocio",
+      use: "Para convencer a quien decide de que un problema merece arreglarse.",
+      text: "Actúa como especialista en UX que tiene que convencer a [quién decide: dirección, producto, cliente].\n\nEl problema es este: [describe el problema, a quién afecta y dónde está].\nArreglarlo costaría más o menos [esfuerzo estimado].\n\nEscribe un mensaje de 150 palabras o menos que:\n- Empiece por el efecto en las personas y en el negocio (tareas que no se pueden terminar, llamadas a soporte, quejas), sin dramatizar.\n- Explique el problema sin jerga técnica.\n- Proponga una solución y un primer paso pequeño.\n- No amenace con multas ni prometa que arreglándolo «se cumple la ley».\n\nDame también una versión de 2 frases para un chat.",
+      check: "Añade datos tuyos si los tienes (quejas, analítica, pruebas). Convencen más que cualquier texto."
+    },
+    {
+      id: "persona-inclusiva", cat: "investigacion", title: "Revisar una persona o un mapa de experiencia",
+      use: "Para detectar sesgos y supuestos en un arquetipo antes de usarlo en el proyecto.",
+      text: "Actúa como investigador o investigadora de UX con enfoque inclusivo.\n\nEsta es una persona (o un mapa de experiencia) de nuestro proyecto sobre [producto o servicio]:\n[pega aquí el contenido]\n\nRevísala y dime:\n1. Supuestos que no se apoyan en datos de investigación.\n2. Estereotipos de edad, género, discapacidad, origen o nivel económico.\n3. Situaciones que deja fuera: discapacidad permanente, temporal o de situación (por ejemplo, una mano ocupada o mucho sol en la pantalla), poca conexión, poca experiencia digital, otro idioma.\n4. Preguntas de investigación para comprobar lo que no sabemos.\n\nNo inventes datos para rellenar huecos: señálalos.",
+      check: "Las personas sirven si salen de investigación real. Usa estas preguntas para tu próxima ronda."
+    }
+  ];
+
+  var $ = function (id) { return document.getElementById(id); };
+  var lista = $("lista"), buscar = $("buscar"), cats = $("cats"), cuenta = $("cuenta"), vacio = $("vacio");
+  var catName = {}; CATS.forEach(function (c) { catName[c.id] = c.name; });
+
+  CATS.forEach(function (c, i) {
+    var l = document.createElement("label"); l.className = "cat";
+    var inp = document.createElement("input"); inp.type = "radio"; inp.name = "cat"; inp.value = c.id; if (i === 0) inp.checked = true;
+    var s = document.createElement("span"); s.textContent = c.name;
+    l.appendChild(inp); l.appendChild(s); cats.appendChild(l);
+  });
+
+  function esc(s) { return s.replace(/[&<>"]/g, function (ch) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]; }); }
+  function marked(s) { return esc(s).replace(/\[[^\]\n]+\]/g, function (m) { return '<span class="ph">' + m + "</span>"; }); }
+
+  function card(p) {
+    var full = p.text + CIERRE;
+    var li = document.createElement("li"); li.className = "prompt"; li.id = "p-" + p.id;
+    li.innerHTML =
+      '<div class="prompt-head"><h3 class="cz-display-md">' + esc(p.title) + '</h3><span class="tag">' + esc(catName[p.cat]) + "</span></div>" +
+      "<p>" + esc(p.use) + "</p>" +
+      '<pre tabindex="0" aria-label="Prompt: ' + esc(p.title) + '">' + marked(full) + "</pre>" +
+      '<div class="prompt-actions"><button type="button" class="cz-btn">Copiar prompt</button><span class="copied" role="status" aria-live="polite"></span></div>' +
+      '<p class="check-note"><strong>Revisa tú:</strong> ' + esc(p.check) + "</p>";
+    var btn = li.querySelector("button"), st = li.querySelector(".copied"), pre = li.querySelector("pre");
+    btn.addEventListener("click", function () {
+      copyText(full,
+        function () { st.textContent = "Copiado. Pégalo en tu IA y cambia lo que va entre corchetes."; setTimeout(function () { st.textContent = ""; }, 4000); },
+        function () { selectNode(pre); st.textContent = "Seleccionado: cópialo con Ctrl+C o Cmd+C."; });
+      track("prompts-copiar-" + p.id, "Copiar: " + p.title);
+    });
+    return li;
+  }
+
+  function norm(s) { return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+  var searchTimer = null;
+  function render() {
+    var q = norm(buscar.value.trim());
+    var cat = (cats.querySelector("input:checked") || {}).value || "todos";
+    lista.innerHTML = "";
+    var n = 0;
+    P.forEach(function (p) {
+      if (cat !== "todos" && p.cat !== cat) return;
+      if (q && norm(p.title + " " + p.use + " " + p.text).indexOf(q) === -1) return;
+      lista.appendChild(card(p)); n++;
+    });
+    vacio.hidden = n > 0;
+    cuenta.textContent = n === 1 ? "1 prompt gratis" : n + " prompts gratis";
+  }
+  cats.addEventListener("change", function () {
+    render();
+    var v = cats.querySelector("input:checked").value;
+    track("prompts-filtro-" + v);
+  });
+  buscar.addEventListener("input", function () {
+    render();
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(function () { if (buscar.value.trim()) track("prompts-buscar"); }, 1500);
+  });
+  render();
+
+  /* ---------- Pro (medir interés) ---------- */
+  document.querySelectorAll(".pro-chip").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var on = b.getAttribute("aria-pressed") !== "true";
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      if (on) track(b.getAttribute("data-pro"));
+    });
+  });
+  $("proBtn").addEventListener("click", function () {
+    track("prompts-pro-me-interesa");
+    $("proGracias").hidden = false;
+  });
+})();
+</script>
+<script data-goatcounter="https://jrebate.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
